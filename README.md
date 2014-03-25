@@ -3,7 +3,7 @@ AndroidHandlerForDNet
 
 Do something like Handler in Android for .net platform
 
-{
+```c#
 	T1 = new AMCHandlerThread("T1");
 	T1.Start();
 	AMCLooper lp = T1.getLooper();
@@ -14,4 +14,4 @@ Do something like Handler in Android for .net platform
 	AMCBundle bundle = new AMCBundle();
 	bundle.put("key", "THE VALUE");
 	h1.Send(new AMCMsg(4, bundle));
-}
+```
