@@ -9,7 +9,7 @@ namespace AMC
     public class AMCMsg
     {
         public delegate void Runner();
-        public int what = 0;
+        public String what = "unknown";
         public int arg1 = 0;
         public int arg2 = 0;
         public object obj = null;        
@@ -19,7 +19,7 @@ namespace AMC
         internal long targetTime;
         internal bool used = false;
 
-        public AMCMsg(int what)
+        public AMCMsg(String what)
         {
             this.what = what;            
         }
@@ -28,13 +28,13 @@ namespace AMC
         {            
         }
 
-        public AMCMsg(int what, AMCBundle bundle)
+        public AMCMsg(String what, AMCBundle bundle)
         {
             this.what = what;
             this.SetData(bundle);
         }
 
-        public AMCMsg(int what, object obj)
+        public AMCMsg(String what, object obj)
         {            
             this.what = what;
             this.obj = obj;

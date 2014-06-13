@@ -91,7 +91,7 @@ namespace AMC
             }
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        internal void Remove(AMCHandler aMCHandler, int what)
+        internal void Remove(AMCHandler aMCHandler, String what)
         {
             lock (_messages)
             {
@@ -99,7 +99,7 @@ namespace AMC
                 for (int i = 0; i < _messages.Count; i++)
                 {
                     if (_messages[i].GetTarget().Equals(aMCHandler)
-                        && _messages[i].what == what)
+                        && _messages[i].what.Equals(what))
                     {
                         _messages.RemoveAt(i);
                         removed = true;
@@ -112,14 +112,14 @@ namespace AMC
             } 
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        internal bool Has(AMCHandler aMCHandler, int what)
+        internal bool Has(AMCHandler aMCHandler, String what)
         {
             lock (_messages)
             {
                 for (int i = 0; i < _messages.Count; i++)
                 {
                     if (_messages[i].GetTarget().Equals(aMCHandler)
-                        && _messages[i].what == what)
+                        && _messages[i].what.Equals(what))
                     {
                         return true;
                     }

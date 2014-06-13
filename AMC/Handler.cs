@@ -55,7 +55,7 @@ namespace AMC
             SendAtTime(message, Util.DelayMs(delay));            
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Remove(int what)
+        public void Remove(String what)
         {
             _looper.Remove(this, what);                        
         }
@@ -64,8 +64,8 @@ namespace AMC
         {
             _looper.Remove(this, runnable);
         }
-        [MethodImpl(MethodImplOptions.Synchronized)]        
-        public bool Has(int what)
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public bool Has(String what)
         {
             return _looper.Has(this, what);
         }
