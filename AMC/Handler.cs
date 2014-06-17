@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using System.Threading;
 
 namespace AMC
 {
@@ -42,6 +43,11 @@ namespace AMC
             SendAtTime(message, Util.NowMs);
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
+        public void SendEmpty(string what)
+        {
+            SendAtTime(new AMCMsg(what), Util.NowMs);
+        }
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SendAtTime(AMCMsg message, long time)
         {
             message.targetTime = time;
@@ -68,6 +74,16 @@ namespace AMC
         public bool Has(String what)
         {
             return _looper.Has(this, what);
+        }
+
+        public void WaitProcess(AMCMsg message)
+        {
+            message.waiter = new Object();
+            SendAtTime(message, Util.NowMs);
+            lock (message.waiter)
+            {
+                Monitor.Wait(message.waiter);
+            }
         }
     }
 }

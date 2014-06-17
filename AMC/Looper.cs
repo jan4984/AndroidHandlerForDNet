@@ -47,6 +47,13 @@ namespace AMC
                 else if(msg.GetTarget() != null)
                 {
                     msg.GetTarget().HandleMessage(msg);
+                    if (msg.waiter != null)
+                    {
+                        lock (msg.waiter)
+                        {
+                            Monitor.PulseAll(msg.waiter);
+                        }
+                    }
                 }
             }
         }

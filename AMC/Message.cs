@@ -18,6 +18,7 @@ namespace AMC
         internal Runner Runnable;
         internal long targetTime;
         internal bool used = false;
+        internal object waiter;
 
         public AMCMsg(String what)
         {
@@ -34,6 +35,11 @@ namespace AMC
             this.SetData(bundle);
         }
 
+        public AMCMsg(String what, int arg1)
+        {
+            this.what = what;
+            this.arg1 = arg1;
+        }
         public AMCMsg(String what, object obj)
         {            
             this.what = what;
