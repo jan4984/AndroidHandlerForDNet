@@ -48,6 +48,11 @@ namespace AMC
             SendAtTime(new AMCMsg(what), Util.NowMs);
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
+        public void SendEmpty(string what, long delay)
+        {
+            SendAtTime(new AMCMsg(what), Util.DelayMs(delay));
+        }
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SendAtTime(AMCMsg message, long time)
         {
             message.targetTime = time;
@@ -74,6 +79,17 @@ namespace AMC
         public bool Has(String what)
         {
             return _looper.Has(this, what);
+        }
+
+        public void WaitProcess(string what)
+        {
+            AMCMsg message = new AMCMsg(what);
+            message.waiter = new Object();
+            SendAtTime(message, Util.NowMs);
+            lock (message.waiter)
+            {
+                Monitor.Wait(message.waiter);
+            }
         }
 
         public void WaitProcess(AMCMsg message)
