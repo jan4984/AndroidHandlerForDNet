@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Diagnostics;
 
 namespace AMC
 {
@@ -152,11 +153,19 @@ namespace AMC
         {
             AMCMsg ret = null;
             Monitor.Enter(_messages);
-            if (!_started) return null;
+            if (!_started)
+            {
+                Monitor.Exit(_messages);
+                return null;
+            }
             while (_messages.Count <= 0)
             {
                 Monitor.Wait(_messages);
-                if (!_started) return null;            
+                if (!_started)
+                {
+                    Monitor.Exit(_messages);
+                    return null;
+                }
             }
         FIND_AGAIN:
             int count = _messages.Count;
@@ -178,7 +187,11 @@ namespace AMC
                     if(_messages.Count != count)
                         goto FIND_AGAIN;
                 }
-                if (!_started) return null;            
+                if (!_started)
+                {
+                    Monitor.Exit(_messages);
+                    return null;
+                }
             }
             if(ret != null)
                 _messages.Remove(ret);            

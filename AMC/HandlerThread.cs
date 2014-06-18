@@ -11,7 +11,7 @@ namespace AMC
         private Thread _thread;
         private Object _looperLock = new Object();
         private AMCLooper _looper = null;
-        private volatile bool _stop = false;
+        //private volatile bool _stop = false;
 
         public AMCHandlerThread(String name)
         {
@@ -37,7 +37,7 @@ namespace AMC
 
         public void Stop()
         {
-            _stop = true;
+            //_stop = true;
             if (_looper != null)
             {
                 _looper.quit();

@@ -58,7 +58,6 @@ namespace AMC
             message.targetTime = time;
             message.SetTarget(this);
             _looper.Add(message);
-            //Debug.WriteLine("send message at " + message.targetTime);
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Send(AMCMsg message, long delay)
