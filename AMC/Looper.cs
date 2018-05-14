@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
@@ -10,6 +10,7 @@ namespace AMC
 {
     public class AMCLooper
     {
+        private long _version = 1l; 
         private List<AMCMsg> _messages = new List<AMCMsg>();
         private volatile bool _started = false;
         private Thread _thread;
@@ -88,12 +89,13 @@ namespace AMC
         {
             lock (_messages)
             {
-                for (int i = 0; i < _messages.Count; i++)
+                for (int i = _messages.Count - 1; i >=0 ; i--)
                 {
                     if (_messages[i].GetTarget().Equals(aMCHandler)
                         && _messages[i].Runnable.Equals(runnable))
                     {
-                        _messages.RemoveAt(i);                            
+                        _messages.RemoveAt(i);
+                        _version++;
                     }
                 }
             }
@@ -104,12 +106,14 @@ namespace AMC
             lock (_messages)
             {
                 bool removed = false;
-                for (int i = 0; i < _messages.Count; i++)
+                for (int i = _messages.Count - 1; i >=0 ; i--)
                 {
                     if (_messages[i].GetTarget().Equals(aMCHandler)
                         && _messages[i].what.Equals(what))
-                    {
+                    {                        
                         _messages.RemoveAt(i);
+                        Debug.WriteLine("removed msg {0} from handler", what);
+                        _version++;
                         removed = true;
                     }
                 }
@@ -145,6 +149,7 @@ namespace AMC
             lock(_messages){
                 message.used = true;
                 _messages.Add(message);
+                _version++;
                 Monitor.PulseAll(_messages);
             }
         }
@@ -168,7 +173,7 @@ namespace AMC
                 }
             }
         FIND_AGAIN:
-            int count = _messages.Count;
+            long ver = _version;
             long firstMessageTime = long.MaxValue;
             long now = Util.GetMilliseconds(DateTime.Now.Ticks);
             foreach(AMCMsg m in _messages)
@@ -184,7 +189,7 @@ namespace AMC
                 if (Monitor.Wait(_messages, (int)(firstMessageTime - now)))
                 {
                     if (!_started) return null;
-                    if(_messages.Count != count)
+                    if(_version != ver)
                         goto FIND_AGAIN;
                 }
                 if (!_started)
@@ -193,8 +198,13 @@ namespace AMC
                     return null;
                 }
             }
-            if(ret != null)
-                _messages.Remove(ret);            
+
+            if (ret != null)
+            {
+                _messages.Remove(ret);
+                _version++;
+            }
+
             Monitor.Exit(_messages);
             return ret;
         }
